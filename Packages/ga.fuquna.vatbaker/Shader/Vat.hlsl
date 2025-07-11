@@ -7,6 +7,9 @@ float4 _VatPositionTex_TexelSize; // (1.0/width, 1.0/height, width, height) // h
 sampler2D _VatNormalTex;
 float4 _VatNormalTex_TexelSize; // (1.0/width, 1.0/height, width, height) // https://docs.unity3d.com/Manual/SL-PropertiesInPrograms.html
 
+sampler2D _VatBoundsTex;
+float4 _VatBoundsTex_TexelSize; // (1.0/width, 1.0/height, width, height) // https://docs.unity3d.com/Manual/SL-PropertiesInPrograms.html
+
 float _VatAnimFps;
 float _VatAnimLength;
 
@@ -34,4 +37,22 @@ inline float3 GetVatNormal(uint vertexId, float animationTime)
     return (float3)tex2Dlod(_VatNormalTex, CalcVatTexCoord(vertexId, animationTime));
 }
 
+// index: 0 = center, 1 = size
+inline float4 CalcVatBoundsTexCoord(uint index, float animationTime)
+{
+    float x = index + 0.5;
+    float y = animationTime + 0.5;
+    
+    return float4(x, y, 0, 0) * _VatBoundsTex_TexelSize;   
+}
+
+inline float3 GetVatBoundsCenter(float animationTime)
+{
+    return (float3)tex2Dlod(_VatBoundsTex, CalcVatBoundsTexCoord(0, animationTime));
+}
+
+inline float3 GetVatBoundsSize(float animationTime)
+{
+    return (float3)tex2Dlod(_VatBoundsTex, CalcVatBoundsTexCoord(1, animationTime));
+}
 #endif

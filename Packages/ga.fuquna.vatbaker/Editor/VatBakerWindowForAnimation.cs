@@ -82,8 +82,8 @@ namespace VatBaker.Editor
             foreach(var clip in _clips)
             {
                 var assetName = $"{gameObject.name}_{clip.name}";
-                var (posTex, normTex) = VatBakerCore.BakeClip(assetName, gameObject, _skin, clip, animationFps, space);
-                VatBakerCore.GenerateAssets(assetName, _skin, animationFps, clip.length, sampleShader, posTex, normTex);
+                var (posTex, normTex, boundsTex) = VatBakerCore.BakeClip(assetName, gameObject, _skin, clip, animationFps, space);
+                VatBakerCore.GenerateAssets(assetName, _skin, animationFps, clip.length, sampleShader, posTex, normTex, boundsTex);
             }
         }
     }
