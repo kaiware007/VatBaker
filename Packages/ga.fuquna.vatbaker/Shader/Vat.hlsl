@@ -14,12 +14,12 @@ float _VatAnimFps;
 float _VatAnimLength;
 
 
-inline float CalcVatAnimationTime(float time)
+float CalcVatAnimationTime(float time)
 {
     return (time  % _VatAnimLength) * _VatAnimFps;
 }
 
-inline float4 CalcVatTexCoord(uint vertexId, float animationTime)
+float4 CalcVatTexCoord(uint vertexId, float animationTime)
 {
     float x = vertexId + 0.5;
     float y = animationTime + 0.5;
@@ -27,18 +27,18 @@ inline float4 CalcVatTexCoord(uint vertexId, float animationTime)
     return float4(x, y, 0, 0) * _VatPositionTex_TexelSize;   
 }
 
-inline float3 GetVatPosition(uint vertexId, float animationTime)
+float3 GetVatPosition(uint vertexId, float animationTime)
 {
     return (float3)tex2Dlod(_VatPositionTex, CalcVatTexCoord(vertexId, animationTime));
 }
 
-inline float3 GetVatNormal(uint vertexId, float animationTime)
+float3 GetVatNormal(uint vertexId, float animationTime)
 {
     return (float3)tex2Dlod(_VatNormalTex, CalcVatTexCoord(vertexId, animationTime));
 }
 
 // index: 0 = center, 1 = size
-inline float4 CalcVatBoundsTexCoord(uint index, float animationTime)
+float4 CalcVatBoundsTexCoord(uint index, float animationTime)
 {
     float x = index + 0.5;
     float y = animationTime + 0.5;
@@ -46,12 +46,12 @@ inline float4 CalcVatBoundsTexCoord(uint index, float animationTime)
     return float4(x, y, 0, 0) * _VatBoundsTex_TexelSize;   
 }
 
-inline float3 GetVatBoundsCenter(float animationTime)
+float3 GetVatBoundsCenter(float animationTime)
 {
     return (float3)tex2Dlod(_VatBoundsTex, CalcVatBoundsTexCoord(0, animationTime));
 }
 
-inline float3 GetVatBoundsSize(float animationTime)
+float3 GetVatBoundsSize(float animationTime)
 {
     return (float3)tex2Dlod(_VatBoundsTex, CalcVatBoundsTexCoord(1, animationTime));
 }
