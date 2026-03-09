@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rhino Walk_walk
-  m_Shader: {fileID: 4800000, guid: 69d614319336e52409c4fec24eb27d70, type: 3}
+  m_Name: Rhino Walk_walk_normal
+  m_Shader: {fileID: 4800000, guid: 20991a15190baeb44bab24df7ca0d119, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -31,6 +31,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: f1b7646a1bd9f5e48ab6d18c0292b1ca, type: 2}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _VatNormalTex:
+        m_Texture: {fileID: 2800000, guid: a2e75229ccc9cc14483c181e8be85ba8, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _VatPositionTex:
         m_Texture: {fileID: 2800000, guid: 4679001d972c5aa42ba03562fcf6d73f, type: 2}
         m_Scale: {x: 1, y: 1}
@@ -43,3 +47,4 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1
