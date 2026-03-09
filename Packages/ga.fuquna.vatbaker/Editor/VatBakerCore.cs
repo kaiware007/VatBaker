@@ -17,31 +17,43 @@ namespace VatBaker.Editor
         private static readonly int BaseShaderBumpMap = Shader.PropertyToID("_BumpMap");
 
 
-        public static (Texture2D, Texture2D, Texture2D) BakeClip(string name, GameObject gameObject, SkinnedMeshRenderer skin, AnimationClip clip, float fps, Space space)
+        public static (Texture2D, Texture2D, Texture2D) BakeClip(string name, GameObject gameObject, SkinnedMeshRenderer skin, AnimationClip clip, float fps, Space space, VatExportTarget exportTarget)
         {
             var vertexCount = skin.sharedMesh.vertexCount;
             var frameCount = Mathf.FloorToInt(clip.length * fps) + 1; // for loop
 
-            var posTex = new Texture2D(vertexCount, frameCount, TextureFormat.RGBAHalf, false, true)
-            {
-                name = $"{name}.posTex",
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Repeat
-            };
+            Texture2D posTex = null, normTex = null, boundsTex = null;
             
-            var normTex = new Texture2D(vertexCount, frameCount, TextureFormat.RGBAHalf, false, true)
+            if (exportTarget.positionTexture)
             {
-                name = $"{name}.normTex",
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Repeat
-            };
-   
-            var boundsTex = new Texture2D(2, frameCount, TextureFormat.RGBAHalf, false, true)
+                posTex = new Texture2D(vertexCount, frameCount, TextureFormat.RGBAHalf, false, true)
+                {
+                    name = $"{name}.posTex",
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Repeat
+                };
+            }
+
+            if (exportTarget.normalTexture)
             {
-                name = $"{name}.boundsTex",
-                filterMode = FilterMode.Bilinear,
-                wrapMode = TextureWrapMode.Repeat
-            };
+                normTex = new Texture2D(vertexCount, frameCount, TextureFormat.RGBAHalf, false, true)
+                {
+                    name = $"{name}.normTex",
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Repeat
+                };
+            }
+
+            if (exportTarget.boundsTexture)
+            {
+                boundsTex = new Texture2D(2, frameCount, TextureFormat.RGBAHalf, false, true)
+                {
+                    name = $"{name}.boundsTex",
+                    filterMode = FilterMode.Bilinear,
+                    wrapMode = TextureWrapMode.Repeat
+                };                
+            }
+
             using var poolVtx0 = ListPool<Vector3>.Get(out var tmpVertexList);
             using var poolVtx1 = ListPool<Vector3>.Get(out var localVertices);
             
@@ -109,10 +121,9 @@ namespace VatBaker.Editor
                 _ => throw new ArgumentOutOfRangeException(nameof(space), space, null)
             };
             
-
-            posTex.SetPixels(ListToColorArray(vertices));
-            normTex.SetPixels(ListToColorArray(normals));
-            boundsTex.SetPixels(BoundsListToColorArray(bounds));
+            posTex?.SetPixels(ListToColorArray(vertices));
+            normTex?.SetPixels(ListToColorArray(normals));
+            boundsTex?.SetPixels(BoundsListToColorArray(bounds));
             
             return (posTex, normTex, boundsTex);
 
@@ -159,9 +170,20 @@ namespace VatBaker.Editor
             go.AddComponent<MeshRenderer>().sharedMaterial = mat;
             go.AddComponent<MeshFilter>().sharedMesh = skin.sharedMesh;
 
-            AssetDatabase.CreateAsset(posTex, CreatePath(subFolderPath, posTex.name, "asset"));
-            AssetDatabase.CreateAsset(normTex, CreatePath(subFolderPath, normTex.name, "asset"));
-            AssetDatabase.CreateAsset(boundsTex, CreatePath(subFolderPath, boundsTex.name, "asset"));
+            if (posTex)
+            {
+                AssetDatabase.CreateAsset(posTex, CreatePath(subFolderPath, posTex.name, "asset"));
+            }
+
+            if (normTex)
+            {
+                AssetDatabase.CreateAsset(normTex, CreatePath(subFolderPath, normTex.name, "asset"));
+            }
+
+            if (boundsTex)
+            {
+                AssetDatabase.CreateAsset(boundsTex, CreatePath(subFolderPath, boundsTex.name, "asset"));
+            }
             AssetDatabase.CreateAsset(mat, CreatePath(subFolderPath, name, "mat"));
             var prefab = PrefabUtility.SaveAsPrefabAssetAndConnect(go, 
                 CreatePath(subFolderPath, go.name, "prefab"),

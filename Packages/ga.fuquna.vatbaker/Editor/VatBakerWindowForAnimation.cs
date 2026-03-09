@@ -15,6 +15,7 @@ namespace VatBaker.Editor
         public Space space = Space.Self;
         public int animationFps = 5;
         public Shader sampleShader;
+        public VatExportTarget exportTarget = new();
         
         private SkinnedMeshRenderer _skin;
         private AnimationClip[] _clips;
@@ -42,6 +43,7 @@ namespace VatBaker.Editor
             root.Add(new PropertyField() {bindingPath = nameof(space)});
             root.Add(new PropertyField() {bindingPath = nameof(animationFps)});
             root.Add(new PropertyField() {bindingPath = nameof(sampleShader)});
+            root.Add(new PropertyField() {bindingPath = nameof(exportTarget)});
             root.Add(_bakeButton);
 
             root.Bind(new SerializedObject(this));
@@ -82,7 +84,7 @@ namespace VatBaker.Editor
             foreach(var clip in _clips)
             {
                 var assetName = $"{gameObject.name}_{clip.name}";
-                var (posTex, normTex, boundsTex) = VatBakerCore.BakeClip(assetName, gameObject, _skin, clip, animationFps, space);
+                var (posTex, normTex, boundsTex) = VatBakerCore.BakeClip(assetName, gameObject, _skin, clip, animationFps, space, exportTarget);
                 VatBakerCore.GenerateAssets(assetName, _skin, animationFps, clip.length, sampleShader, posTex, normTex, boundsTex);
             }
         }
